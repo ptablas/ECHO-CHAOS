@@ -12,6 +12,16 @@
 #include "Osc.h"
 
 //==============================================================================
+
+juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
+{
+    juce::AudioProcessorValueTreeState::ParameterLayout layout;
+    Ek0Ka0s::addMidSideParameters(layout);
+    Ek0kA0s::addMidParameters(layout);
+    EK0Ka0s::addSideParameters(layout);
+}
+
+//==============================================================================
 MSUtilityAudioProcessor::MSUtilityAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
     : MagicProcessor(BusesProperties()
