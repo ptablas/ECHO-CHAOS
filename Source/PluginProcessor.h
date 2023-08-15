@@ -9,11 +9,17 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Ek0Ka0s.h"
 #include "Osc.h"
 
 //==============================================================================
 /**
 */
+
+class PresetListBox;
+
+//==============================================================================
+
 class MSUtilityAudioProcessor  : public foleys::MagicProcessor,
                                  public juce::AudioProcessorValueTreeState::Listener
 {
@@ -48,11 +54,16 @@ public:
     void changeProgramName (int index, const juce::String& newName) override;
 
     //==============================================================================
+    void savePresetInternal();
+    void loadPresetInternal(int index);
+
+    //==============================================================================
     void parameterChanged(const juce::String& parameterID, float newValue) override;
 
 private:
 
     juce::AudioProcessorValueTreeState treeState;
+    juce::ValueTree                    presetNode;
 
 
     // Initialization of Variables for parameterChanged (ultimately for processing block)
@@ -110,6 +121,11 @@ private:
 
     juce::SmoothedValue<double> LFO_Speed_Side_Target = 0;
     juce::SmoothedValue<double> LFO_Depth_Side_Target = 0;
+
+
+    // GUI MAGIC
+
+    PresetListBox* presetList = nullptr;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MSUtilityAudioProcessor)

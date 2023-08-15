@@ -7,72 +7,66 @@
 */
 
 #include "PluginProcessor.h"
-#include "PluginEditor.h"
+#include "PresetListBox.h"
 
-#include "Osc.h"
 
 //==============================================================================
 
 juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
-    Ek0Ka0s::addMidSideParameters(layout);
-    Ek0kA0s::addMidParameters(layout);
-    EK0Ka0s::addSideParameters(layout);
+    Ek0Ka0s::addMSParameters(layout);
+    Ek0Ka0s::addMidParameters(layout);
+    Ek0Ka0s::addSideParameters(layout);
+    return layout;
 }
 
 //==============================================================================
+
+
 MSUtilityAudioProcessor::MSUtilityAudioProcessor()
-#ifndef JucePlugin_PreferredChannelConfigurations
-    : MagicProcessor(BusesProperties()
-#if ! JucePlugin_IsMidiEffect
-#if ! JucePlugin_IsSynth
+    : foleys::MagicProcessor(BusesProperties()
         .withInput("Input", juce::AudioChannelSet::stereo(), true)
-#endif
-        .withOutput("Output", juce::AudioChannelSet::stereo(), true)
-#endif
-    ), treeState(*this, nullptr, juce::Identifier("PARAMETERS"),
-        {
-
-            //Definition of parameters IDs, ranges and starting values to be passed to TreeState
-
-            //Width Section
-            std::make_unique<juce::AudioParameterFloat>("stereowidth", "StereoWidth", 0.f, 2.f, 1.f),
-            std::make_unique<juce::AudioParameterChoice>("input", "Input", juce::StringArray("Stereo", "Mid/Side"), 0),
-            std::make_unique<juce::AudioParameterChoice>("output", "Output", juce::StringArray("Stereo", "Mid/Side"), 0),
-
-            //Filter Section
-
-                //Mid
-            std::make_unique<juce::AudioParameterFloat>("cutoffmid", "cutoffMid", juce::NormalisableRange<float> {20.f, 20000.0f, 0.0001f, 0.6f}, 200.f),  // <-creates skew factor  
-            std::make_unique<juce::AudioParameterFloat>("resonancemid", "ResonanceMid", 0.1, 0.7f, 0.0001),                                                //   (more of the dial
-            std::make_unique<juce::AudioParameterChoice>("modemid", "Filter Type Mid", juce::StringArray("LPF", "BPF", "HPF"), 0),                         //   affects lower side)
-
-                //Side
-            std::make_unique<juce::AudioParameterFloat>("cutoffside", "cutoffSide", juce::NormalisableRange<float> {20.f, 20000.0f, 0.0001f, 0.6f}, 200.f), // skew factor again
-            std::make_unique<juce::AudioParameterFloat>("resonanceside", "ResonanceSide", 0.1, 0.7, 0.0001f),
-            std::make_unique<juce::AudioParameterChoice>("modeside", "Filter Type Side", juce::StringArray("LPF", "BPF", "HPF"), 0),
-
-           //Delay  Section
-                            
-                //Mid
-           std::make_unique<juce::AudioParameterFloat>("sendmid", "SendMid", 0.f, 1.f, 0.f), //controls dry/wet of signal
-           std::make_unique<juce::AudioParameterFloat>("timemid", "TimeMid", 0.f, 20000.f, 0.f), // Delay time in samples
-           std::make_unique<juce::AudioParameterFloat>("lfospeedmid", "LFOSpeedMid", juce::NormalisableRange<float> {0.f, 10.f, 0.0001f, 0.6f}, 0.f), //in Hertz
-           std::make_unique<juce::AudioParameterFloat>("lfodepthmid", "LFODepthMid", juce::NormalisableRange<float> {0.f, 20000.f / 2.f, 0.0001f, 0.6f}, 0.f), // in miliseconds (since it modulates time) Again skew factor
-           std::make_unique<juce::AudioParameterChoice>("waveformmid", "WaveformMid", juce::StringArray("Sine", "Triangle", "Sawtooth", "Square", "Random", "Sample & Hold"), 0),
-           std::make_unique<juce::AudioParameterFloat>("feedbackmid", "FeedbackMid", 0.f, 0.9f, 0.0001f),
-
-                //Side
-           std::make_unique<juce::AudioParameterFloat>("sendside", "SendSide", 0.f, 1.f, 0.f),
-           std::make_unique<juce::AudioParameterFloat>("timeside", "TimeSide", 0.f, 20000.f, 0.f), // In samples
-           std::make_unique<juce::AudioParameterFloat>("lfospeedside", "LFOSpeedSide", juce::NormalisableRange<float> {0.f, 10.f, 0.0001f, 0.6f}, 0.f),
-           std::make_unique<juce::AudioParameterFloat>("lfodepthside", "LFODepthSide", juce::NormalisableRange<float> {0.f, 20000.f / 2.f, 0.0001f, 0.6f}, 0.f),
-           std::make_unique<juce::AudioParameterChoice>("waveformside", "WaveformSide", juce::StringArray("Sine", "Triangle", "Sawtooth", "Square", "Random", "Sample & Hold"), 0),
-           std::make_unique<juce::AudioParameterFloat>("feedbackside", "FeedbackSide", 0.f, 0.9f, 0.0001f),
-                           })
-#endif
+        .withOutput("Output", juce::AudioChannelSet::stereo(), true)),
+        treeState(*this, nullptr, ProjectInfo::projectName, createParameterLayout())
 {
+
+        FOLEYS_SET_SOURCE_PATH(__FILE__);
+
+        auto file = juce::File::getSpecialLocation(juce::File::currentApplicationFile)
+        .getChildFile("Contents")
+        .getChildFile("Resources")
+        .getChildFile("magic.xml");
+    
+        if (file.existsAsFile())
+        magicState.setGuiValueTree(file);
+        //else
+        //magicState.setGuiValueTree(BinaryData::magic_xml, BinaryData::magic_xmlSize);
+
+        /*
+        // MAGIC GUI: add a meter at the output
+        outputMeter = magicState.createAndAddObject<foleys::MagicLevelSource>("output");
+        oscilloscope = magicState.createAndAddObject<foleys::MagicOscilloscope>("waveform");
+
+        analyser = magicState.createAndAddObject<foleys::MagicAnalyser>("analyser");
+        magicState.addBackgroundProcessing(analyser);
+        */
+
+        presetList = magicState.createAndAddObject<PresetListBox>("presets");
+        presetList->onSelectionChanged = [&](int number)
+            {
+                loadPresetInternal(number);
+            };
+        magicState.addTrigger("save-preset", [this]
+            {
+                savePresetInternal();
+            });
+
+        magicState.setApplicationSettingsFile(juce::File::getSpecialLocation(juce::File::userApplicationDataDirectory)
+            .getChildFile(ProjectInfo::companyName)
+            .getChildFile(ProjectInfo::projectName + juce::String(".settings")));
+
+        magicState.setPlayheadUpdateFrequency(30);
 
 }
 
@@ -140,6 +134,30 @@ const juce::String MSUtilityAudioProcessor::getProgramName (int index)
 
 void MSUtilityAudioProcessor::changeProgramName (int index, const juce::String& newName)
 {
+}
+
+//==============================================================================
+
+void MSUtilityAudioProcessor::savePresetInternal()
+{
+    presetNode = magicState.getSettings().getOrCreateChildWithName("presets", nullptr);
+
+    juce::ValueTree preset{ "Preset" };
+    preset.setProperty("name", "Preset " + juce::String(presetNode.getNumChildren() + 1), nullptr);
+
+    foleys::ParameterManager manager(*this);
+    manager.saveParameterValues(preset);
+
+    presetNode.appendChild(preset, nullptr);
+}
+
+void MSUtilityAudioProcessor::loadPresetInternal(int index)
+{
+    presetNode = magicState.getSettings().getOrCreateChildWithName("presets", nullptr);
+    auto preset = presetNode.getChild(index);
+
+    foleys::ParameterManager manager(*this);
+    manager.loadParameterValues(preset);
 }
 
 //==============================================================================

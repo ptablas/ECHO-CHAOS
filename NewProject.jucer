@@ -9,14 +9,12 @@
             file="Source/PluginProcessor.cpp"/>
       <FILE id="gGZjEg" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
-      <FILE id="x5ICl8" name="PluginEditor.cpp" compile="1" resource="0"
-            file="Source/PluginEditor.cpp"/>
-      <FILE id="RnpCtG" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
     <FILE id="GD75sb" name="Ek0Ka0s.cpp" compile="1" resource="0" file="Source/Ek0Ka0s.cpp"/>
     <FILE id="aB8Ag7" name="Ek0Ka0s.h" compile="0" resource="0" file="Source/Ek0Ka0s.h"/>
     <FILE id="bvyNg8" name="Osc.cpp" compile="1" resource="0" file="Source/Osc.cpp"/>
     <FILE id="p2qS7N" name="Osc.h" compile="0" resource="0" file="Source/Osc.h"/>
+    <FILE id="pUd0sC" name="PresetListBox.h" compile="0" resource="0" file="Source/PresetListBox.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"
                FOLEYS_ENABLE_BINARY_DATA="1"/>
