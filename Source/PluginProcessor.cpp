@@ -24,7 +24,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout()
 //==============================================================================
 
 
-MSUtilityAudioProcessor::MSUtilityAudioProcessor()
+Ek0Ka0sAudioProcessor::Ek0Ka0sAudioProcessor()
     : foleys::MagicProcessor(BusesProperties()
         .withInput("Input", juce::AudioChannelSet::stereo(), true)
         .withOutput("Output", juce::AudioChannelSet::stereo(), true)),
@@ -40,8 +40,8 @@ MSUtilityAudioProcessor::MSUtilityAudioProcessor()
     
         if (file.existsAsFile())
         magicState.setGuiValueTree(file);
-        //else
-        //magicState.setGuiValueTree(BinaryData::magic_xml, BinaryData::magic_xmlSize);
+        else
+        magicState.setGuiValueTree(BinaryData::magic_xml, BinaryData::magic_xmlSize);
 
         /*
         // MAGIC GUI: add a meter at the output
@@ -70,17 +70,17 @@ MSUtilityAudioProcessor::MSUtilityAudioProcessor()
 
 }
 
-MSUtilityAudioProcessor::~MSUtilityAudioProcessor()
+Ek0Ka0sAudioProcessor::~Ek0Ka0sAudioProcessor()
 {
 }
 
 //==============================================================================
-const juce::String MSUtilityAudioProcessor::getName() const
+const juce::String Ek0Ka0sAudioProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool MSUtilityAudioProcessor::acceptsMidi() const
+bool Ek0Ka0sAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -89,7 +89,7 @@ bool MSUtilityAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool MSUtilityAudioProcessor::producesMidi() const
+bool Ek0Ka0sAudioProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -98,7 +98,7 @@ bool MSUtilityAudioProcessor::producesMidi() const
    #endif
 }
 
-bool MSUtilityAudioProcessor::isMidiEffect() const
+bool Ek0Ka0sAudioProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -107,38 +107,38 @@ bool MSUtilityAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double MSUtilityAudioProcessor::getTailLengthSeconds() const
+double Ek0Ka0sAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int MSUtilityAudioProcessor::getNumPrograms()
+int Ek0Ka0sAudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int MSUtilityAudioProcessor::getCurrentProgram()
+int Ek0Ka0sAudioProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void MSUtilityAudioProcessor::setCurrentProgram (int index)
+void Ek0Ka0sAudioProcessor::setCurrentProgram (int index)
 {
 }
 
-const juce::String MSUtilityAudioProcessor::getProgramName (int index)
+const juce::String Ek0Ka0sAudioProcessor::getProgramName (int index)
 {
     return {};
 }
 
-void MSUtilityAudioProcessor::changeProgramName (int index, const juce::String& newName)
+void Ek0Ka0sAudioProcessor::changeProgramName (int index, const juce::String& newName)
 {
 }
 
 //==============================================================================
 
-void MSUtilityAudioProcessor::savePresetInternal()
+void Ek0Ka0sAudioProcessor::savePresetInternal()
 {
     presetNode = magicState.getSettings().getOrCreateChildWithName("presets", nullptr);
 
@@ -151,7 +151,7 @@ void MSUtilityAudioProcessor::savePresetInternal()
     presetNode.appendChild(preset, nullptr);
 }
 
-void MSUtilityAudioProcessor::loadPresetInternal(int index)
+void Ek0Ka0sAudioProcessor::loadPresetInternal(int index)
 {
     presetNode = magicState.getSettings().getOrCreateChildWithName("presets", nullptr);
     auto preset = presetNode.getChild(index);
@@ -161,7 +161,7 @@ void MSUtilityAudioProcessor::loadPresetInternal(int index)
 }
 
 //==============================================================================
-void MSUtilityAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void Ek0Ka0sAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     
 
@@ -212,14 +212,14 @@ void MSUtilityAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
           
 }
 
-void MSUtilityAudioProcessor::releaseResources()
+void Ek0Ka0sAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool MSUtilityAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool Ek0Ka0sAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     juce::ignoreUnused (layouts);
@@ -242,7 +242,7 @@ bool MSUtilityAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 }
 #endif
 
-void MSUtilityAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void Ek0Ka0sAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
@@ -353,7 +353,7 @@ void MSUtilityAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 }
 
 //Function called when parameter is changed
-void MSUtilityAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+void Ek0Ka0sAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
     // Here we detect changes made by parameterIDs in the editor for processing in the processBlock.
 
@@ -365,10 +365,10 @@ void MSUtilityAudioProcessor::parameterChanged(const juce::String& parameterID, 
 
     else if (parameterID == "input")
     {
-        switch ((int)newValue) // Something happens to Input_Type
+        switch ((int)newValue)
         {
         case 0:
-              Input_Type = "Stereo";
+            Input_Type = "Stereo";
             break;
         case 1:
             Input_Type = "Mid/Side";
@@ -558,5 +558,5 @@ void MSUtilityAudioProcessor::parameterChanged(const juce::String& parameterID, 
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new MSUtilityAudioProcessor();
+    return new Ek0Ka0sAudioProcessor();
 }

@@ -20,13 +20,13 @@ class PresetListBox;
 
 //==============================================================================
 
-class MSUtilityAudioProcessor  : public foleys::MagicProcessor,
-                                 public juce::AudioProcessorValueTreeState::Listener
+class Ek0Ka0sAudioProcessor  : public foleys::MagicProcessor,
+                               public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
-    MSUtilityAudioProcessor();
-    ~MSUtilityAudioProcessor() override;
+    Ek0Ka0sAudioProcessor();
+    ~Ek0Ka0sAudioProcessor() override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -128,5 +128,5 @@ private:
     PresetListBox* presetList = nullptr;
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MSUtilityAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Ek0Ka0sAudioProcessor)
 };
