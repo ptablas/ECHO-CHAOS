@@ -14,7 +14,7 @@
 //==============================================================================
 /**
 */
-class MSUtilityAudioProcessor  : public juce::AudioProcessor,
+class MSUtilityAudioProcessor  : public foleys::MagicProcessor,
                                  public juce::AudioProcessorValueTreeState::Listener
 {
 public:
@@ -33,10 +33,6 @@ public:
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 
     //==============================================================================
-    juce::AudioProcessorEditor* createEditor() override;
-    bool hasEditor() const override;
-
-    //==============================================================================
     const juce::String getName() const override;
 
     bool acceptsMidi() const override;
@@ -52,9 +48,6 @@ public:
     void changeProgramName (int index, const juce::String& newName) override;
 
     //==============================================================================
-    void getStateInformation (juce::MemoryBlock& destData) override;
-    void setStateInformation (const void* data, int sizeInBytes) override;
-
     void parameterChanged(const juce::String& parameterID, float newValue) override;
 
 private:
@@ -89,7 +82,7 @@ private:
     float Cut_Off_Mid;
     float Cut_Off_Side;
 
-    // Initialize Delay         Lagrange3rd is a high-quality interpolation <-> 3000 is longest num. of samples of delay tap
+    // Initialize Delay Lagrange3rd is a high-quality interpolation <-> 3000 is longest num. of samples of delay tap
 
     juce::dsp::DelayLine<double, juce::dsp::DelayLineInterpolationTypes::Lagrange3rd> MidDelayModule{30000};
     juce::dsp::DelayLine<double, juce::dsp::DelayLineInterpolationTypes::Lagrange3rd> SideDelayModule{30000};
