@@ -127,6 +127,9 @@ private:
 
     PresetListBox* presetList = nullptr;
 
+    foleys::MagicOscilloscope* midOscilloscope = nullptr;
+    foleys::MagicOscilloscope* sideOscilloscope = nullptr;
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Ek0Ka0sAudioProcessor)
 };

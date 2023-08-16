@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="U5WYp5" name="ECHO-CHAOS" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
-              companyName="Ansibles" pluginVST3Category="Fx">
+              companyName="Ansibles" pluginVST3Category="Fx" cppLanguageStandard="17">
   <MAINGROUP id="O1CvXc" name="ECHO-CHAOS">
     <GROUP id="{ED96BEA6-93EC-4A9A-D670-4CDD6FFF5248}" name="Source">
       <FILE id="FUsfGY" name="PluginProcessor.cpp" compile="1" resource="0"

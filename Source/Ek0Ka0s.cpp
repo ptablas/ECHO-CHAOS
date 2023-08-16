@@ -113,7 +113,7 @@ void Ek0Ka0s::addSideParameters(juce::AudioProcessorValueTreeState::ParameterLay
     auto waveformside = std::make_unique<juce::AudioParameterChoice>("waveformside", "WaveformSide", juce::StringArray("Sine", "Triangle", "Sawtooth", "Square", "Random", "Sample & Hold"), 0);
 
 
-    auto group = std::make_unique<juce::AudioProcessorParameterGroup>("side", "MID", "|",
+    auto group = std::make_unique<juce::AudioProcessorParameterGroup>("side", "SIDE", "|",
         std::move(cutoffside),
         std::move(resonanceside),
         std::move(modeside),

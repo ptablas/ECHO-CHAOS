@@ -40,8 +40,8 @@ Ek0Ka0sAudioProcessor::Ek0Ka0sAudioProcessor()
     
         if (file.existsAsFile())
         magicState.setGuiValueTree(file);
-        else
-        magicState.setGuiValueTree(BinaryData::magic_xml, BinaryData::magic_xmlSize);
+        //else
+        //magicState.setGuiValueTree(BinaryData::magic_xml, BinaryData::magic_xmlSize);
 
         /*
         // MAGIC GUI: add a meter at the output
@@ -51,6 +51,13 @@ Ek0Ka0sAudioProcessor::Ek0Ka0sAudioProcessor()
         analyser = magicState.createAndAddObject<foleys::MagicAnalyser>("analyser");
         magicState.addBackgroundProcessing(analyser);
         */
+
+        //MAGIC GUI STUFF======================================
+
+        midOscilloscope = magicState.createAndAddObject<foleys::MagicOscilloscope>("midOsc");
+        sideOscilloscope = magicState.createAndAddObject<foleys::MagicOscilloscope>("sideOsc");
+
+        //=====================================================
 
         presetList = magicState.createAndAddObject<PresetListBox>("presets");
         presetList->onSelectionChanged = [&](int number)
@@ -183,9 +190,6 @@ void Ek0Ka0sAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     lfoMid.prepare(spec);
     lfoSide.prepare(spec);
 
-    //lfoMid.setWaveform(Osc::Random);
-    //lfoSide.setWaveform(Osc::SH);
-
     // Delay Modules Initializiation                    << Delays here and so on...
 
     MidDelayModule.reset();
@@ -209,7 +213,8 @@ void Ek0Ka0sAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     LFO_Depth_Side_Target.reset(sampleRate, rampTime);
     LFO_Speed_Mid_Target.reset(sampleRate, rampTime);
     LFO_Speed_Side_Target.reset(sampleRate, rampTime);
-          
+
+
 }
 
 void Ek0Ka0sAudioProcessor::releaseResources()
@@ -294,6 +299,17 @@ void Ek0Ka0sAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
 
                Time_Side = [](double Time) {if (Time >= 0) { return Time; } else { return -Time; }  }(Time_Side_Target.getNextValue() + lfoValueSide);
                Time_Mid =  [](double Time) {if (Time >= 0) { return Time; } else { return -Time; }  }(Time_Mid_Target.getNextValue() + lfoValueMid);
+
+               lfoValueMid = lfoMid.output(100, 0.5);
+
+               juce::AudioBuffer<float> time_side;
+               time_side.addSample(1, 1, Time_Side);
+
+               juce::AudioBuffer<float> time_mid;
+               time_mid.addSample(0, 0, lfoValueMid);
+
+               midOscilloscope->pushSamples(time_side);
+               sideOscilloscope->pushSamples(time_side);
 
                //Mid Delay
                 
